@@ -24,7 +24,7 @@ fn display_derive(s: synstructure::Structure) -> quote::Tokens {
             #[allow(unreachable_code)]
             fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                 match *self { #display_body }
-                ::std::result::Result::Ok(())
+                ::core::result::Result::Ok(())
             }
         })
     });
