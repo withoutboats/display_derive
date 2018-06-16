@@ -35,11 +35,14 @@ fn display_derive(s: synstructure::Structure) -> quote::Tokens {
 }
 
 fn display_body(s: &synstructure::Structure) -> Option<quote::Tokens> {
-    let mut msgs = s.variants().iter().map(|v| find_display_msg(&v.ast().attrs));
-    if msgs.all(|msg| msg.is_none()) { return None; }
-
     Some(s.each_variant(|v| {
-        let msg = find_display_msg(&v.ast().attrs).expect("All variants must have display attribute.");
+        let msg = match find_display_msg(&v.ast().attrs) {
+            Some(msg) => msg,
+            None => {
+                let variant_name = v.ast().ident.as_ref();
+                return quote!( return write!(f, #variant_name));
+            }
+        };
         if msg.is_empty() {
             panic!("Expected at least one argument to display attribute");
         }
